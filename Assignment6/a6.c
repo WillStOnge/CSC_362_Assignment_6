@@ -5,6 +5,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 
 #define BINS 20 // Size of bin array
 #define INPUTS 18 // Number of items entered
