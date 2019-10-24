@@ -174,5 +174,5 @@ void print(struct bin* bin, int num)
 		node = node->next;
 	}
 
-	printf("]\nLeftover capacity of the bin is %.2f\n\n", bin->capacity);
+	printf("]\Remaining capacity of the bin is %.2f\n\n", bin->capacity);
 }
