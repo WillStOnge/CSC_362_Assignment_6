@@ -33,20 +33,20 @@ void destory(struct bin*); // Deallocates the list inside the bin and sets the i
 int main()
 {
 	// Number of bins used;
-	int count = 0;
+	int i = 0;
 
 	// Run the first fit algorithm
 	firstFit();
 
 	// Prints out all the bins with items in them
-	for (int i = 0; i < BINS; i++)
+	for (i = 0; i < BINS; i++)
 		if ((bins + i)->items != NULL)
-		{
 			print(bins + i, i);
-			count++;
-		}
+		else
+			break;
 
-	printf("Number of bins used: %d", count);
+	// Prints number of bins used
+	printf("Number of bins used: %d", i);
 }
 
 // Gets user inputs for the item names and weights, then adds them to the bins based on the first fit algorithm.
@@ -96,7 +96,7 @@ void insert(struct bin* bin, char* name, double weight)
 	newNode->weight = weight;
 	newNode->next = NULL;
 
-	// Lower the left over capacity of the bin
+	// Decrease the remaining capacity of the bin
 	bin->capacity -= weight;
 
 	// If there are no items in the bin, set the items pointer to the new node.
@@ -143,10 +143,9 @@ void insert(struct bin* bin, char* name, double weight)
 void destory(struct bin* bin)
 {
 	// Temp pointers for looping through the linked list
-	struct node* nextNode;
-	struct node* currentNode = bin->items;
+	struct node* nextNode, *currentNode = bin->items;
 
-	// Loop through all items in the linked list and free the memory
+	// Loop through all items in the linked list and deallocate the memory
 	while (currentNode != NULL)
 	{
 		nextNode = currentNode->next;
@@ -154,7 +153,7 @@ void destory(struct bin* bin)
 		currentNode = nextNode;
 	}
 
-	// Reset bin values
+	// Reset bin values to default
 	bin->items = NULL;
 	bin->capacity = 1.0;
 }
@@ -162,17 +161,17 @@ void destory(struct bin* bin)
 // Traverses and outputs all items in the list inside of the bin as well as the total weight of the items. Takes a bin as an input.
 void print(struct bin* bin, int num)
 {
-	struct node* node = bin->items;
+	struct node* currentNode = bin->items;
 
 	printf("Bin %d:\nItems in the list: [", num);
 
 	// Print each item in the linked list
-	while (node != NULL)
+	while (currentNode != NULL)
 	{
 		// Print a comma and space if it is node the last item in the list
-		node->next == NULL ? printf("\"%s\"", node->name) : printf("\"%s\", ", node->name);
-		node = node->next;
+		currentNode->next == NULL ? printf("\"%s\"", currentNode->name) : printf("\"%s\", ", currentNode->name);
+		currentNode = currentNode->next;
 	}
 
-	printf("]\Remaining capacity of the bin is %.2f\n\n", bin->capacity);
+	printf("]\nRemaining capacity of the bin is %.2f\n\n", bin->capacity);
 }
