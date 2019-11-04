@@ -7,8 +7,8 @@
 #include <string.h>
 #include <stdlib.h>
 
-#define BINS 20 // Size of bin array
-#define INPUTS 18 // Number of items entered
+#define BINS 20 // Size of bin array.
+#define INPUTS 18 // Number of items entered.
 
 // Linked list that contains a name and weight of the item as well as the next item in the list.
 struct node
@@ -23,34 +23,36 @@ struct bin
 {
 	double capacity;
 	struct node* items;
-} bins[BINS]; // Declares array for the bins to be stored in.
+};
 
-void firstFit(); // Algorithm for inserting a new item into a bins based on user input.
+void firstFit(struct bin*); // Algorithm for inserting a new item into a bins based on user input.
 void insert(struct bin*, char*, double); // Insert the item into the list inside of bin making sure it is in alphabetical order.
 void print(struct bin*, int); // Traverses and outputs all items in the list inside of the bin as well as the total weight of the items.
 void destory(struct bin*); // Deallocates the list inside the bin and sets the items pointer to NULL.
 
 int main()
 {
-	// Number of bins used;
+	// Declare array of bins of size BINS.
+	struct bin *bins = (struct bin*)malloc(sizeof(struct bin) * BINS);
+	// Number of bins used.
 	int i = 0;
 
-	// Run the first fit algorithm
-	firstFit();
+	// Run the first fit algorithm.
+	firstFit(bins);
 
-	// Prints out all the bins with items in them
+	// Prints out all the bins with items in them.
 	for (i = 0; i < BINS; i++)
 		if ((bins + i)->items != NULL)
 			print(bins + i, i);
 		else
 			break;
 
-	// Prints number of bins used
+	// Prints number of bins used.
 	printf("Number of bins used: %d", i);
 }
 
 // Gets user inputs for the item names and weights, then adds them to the bins based on the first fit algorithm.
-void firstFit()
+void firstFit(struct bin *bins)
 {
 	int binCount = 0;
 	char* name;
@@ -67,14 +69,14 @@ void firstFit()
 		currentBin->items = NULL;
 	}
 
-	// Loop through all inputs
+	// Loop through all inputs.
 	for (int i = 0; i < INPUTS; i++)
 	{
-		// Get the i-th name and weight in the 'arrays'
+		// Get the i-th name and weight in the 'arrays'.
 		name = *(names + i);
 		weight = *(weights + i);
 
-		// Find the first bin that the element will fit in, then insert it into 
+		// Find the first bin that the element will fit in, then insert it into the linked list.
 		for (int j = 0; j < BINS; j++)
 		{
 			currentBin = bins + j;
@@ -90,26 +92,26 @@ void firstFit()
 // Insert the item into the list inside of bin making sure it is in alphabetical order. Takes a bin pointer, string (character pointer), and a double as inputs.
 void insert(struct bin* bin, char* name, double weight)
 {
-	// Allocate and initialize a new node
+	// Allocate and initialize a new node.
 	struct node* newNode = (struct node*)malloc(sizeof(struct node));
 	newNode->name = name;
 	newNode->weight = weight;
 	newNode->next = NULL;
 
-	// Decrease the remaining capacity of the bin
+	// Decrease the remaining capacity of the bin.
 	bin->capacity -= weight;
 
 	// If there are no items in the bin, set the items pointer to the new node.
 	if (bin->items == NULL)
 		bin->items = newNode;
-	// Search through the bin to see where node will fit
+	// Search through the bin to see where node will fit.
 	else
 	{
-		// Temp pointer for linked list insertion
+		// Temp pointer for linked list insertion.
 		struct node* currentNode = bin->items;
 		struct node* previousNode = NULL;
 
-		// Loop through each node to find the proper spot for the new node
+		// Loop through each node to find the proper spot for the new node.
 		while (currentNode != NULL)
 		{
 			// Compare the strings to determine where the new node should be placed.
@@ -126,7 +128,7 @@ void insert(struct bin* bin, char* name, double weight)
 			{
 				newNode->next = currentNode;
 
-				// Make sure not to reference a null pointer
+				// Make sure not to reference a null pointer.
 				if (previousNode == NULL)
 					bin->items = newNode;
 				else
@@ -142,10 +144,10 @@ void insert(struct bin* bin, char* name, double weight)
 // Free the list's memory inside the bin and sets the items pointer to NULL. Takes a bin pointer as an input.
 void destory(struct bin* bin)
 {
-	// Temp pointers for looping through the linked list
+	// Temp pointers for looping through the linked list.
 	struct node* nextNode, *currentNode = bin->items;
 
-	// Loop through all items in the linked list and deallocate the memory
+	// Loop through all items in the linked list and deallocate the memory.
 	while (currentNode != NULL)
 	{
 		nextNode = currentNode->next;
@@ -153,7 +155,7 @@ void destory(struct bin* bin)
 		currentNode = nextNode;
 	}
 
-	// Reset bin values to default
+	// Reset bin values to default.
 	bin->items = NULL;
 	bin->capacity = 1.0;
 }
@@ -161,17 +163,20 @@ void destory(struct bin* bin)
 // Traverses and outputs all items in the list inside of the bin as well as the total weight of the items. Takes a bin as an input.
 void print(struct bin* bin, int num)
 {
+	// Pointer to the linked list of items inside the bin.
 	struct node* currentNode = bin->items;
 
+	// Output the bin number and the beginning of the list.
 	printf("Bin %d:\nItems in the list: [", num);
 
-	// Print each item in the linked list
+	// Print the current nodes name until the current node is null.
 	while (currentNode != NULL)
 	{
-		// Print a comma and space if it is node the last item in the list
+		// Print a comma and space if it is node the last item in the list and go to the next node.
 		currentNode->next == NULL ? printf("\"%s\"", currentNode->name) : printf("\"%s\", ", currentNode->name);
 		currentNode = currentNode->next;
 	}
 
+	// Print out the remaining capacity of the bin rounded to the hundredths place.
 	printf("]\nRemaining capacity of the bin is %.2f\n\n", bin->capacity);
 }
